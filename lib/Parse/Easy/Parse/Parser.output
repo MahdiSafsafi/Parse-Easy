@@ -1,0 +1,1127 @@
+Warnings:
+---------
+Unused terminals:
+
+	MINUS, declared line 3
+	GT, declared line 2
+	RBRACK, declared line 1
+	LBRACK, declared line 1
+	COLONCOLON, declared line 1
+	LBRACE, declared line 1
+	RBRACE, declared line 1
+
+
+Rules:
+------
+0:	$start -> start $end
+1:	start -> program
+2:	program -> GRAMMAR id SEMICOLON optionalBody
+3:	optionalBody -> /* empty */
+4:	optionalBody -> body
+5:	body -> body spec
+6:	body -> spec
+7:	spec -> rule
+8:	spec -> section
+9:	spec -> use
+10:	OPTIONAL-1 -> array
+11:	OPTIONAL-1 -> /* empty */
+12:	use -> USE PACKAGE_NAME OPTIONAL-1 SEMICOLON
+13:	array -> lazyArray
+14:	array -> legacyArray
+15:	lazyArray -> QW qwOpen optLazyItems qwClose
+16:	qwOpen -> LPAREN
+17:	qwOpen -> SLASH
+18:	qwOpen -> LT
+19:	qwClose -> QWCLOSE
+20:	optLazyItems -> /* empty */
+21:	optLazyItems -> lazyItems
+22:	lazyItems -> lazyItems lazyItem
+23:	lazyItems -> lazyItem
+24:	lazyItem -> id
+25:	legacyArray -> LPAREN optItems RPAREN
+26:	optItems -> /* empty */
+27:	optItems -> items
+28:	items -> items COMMA item
+29:	items -> item
+30:	item -> id
+31:	item -> rawStr
+32:	rawStr -> SQRAWSTR
+33:	rawStr -> DQRAWSTR
+34:	section -> SECTION sectionNames SEMICOLON
+35:	sectionNames -> sectionName
+36:	sectionNames -> LPAREN STAR RPAREN
+37:	sectionNames -> LPAREN sectionNameSequence RPAREN
+38:	sectionName -> TERM
+39:	sectionNameSequence -> sectionNameSequence COMMA sectionName
+40:	sectionNameSequence -> sectionName
+41:	rule -> lexerRule
+42:	rule -> parserRule
+43:	OPTIONAL-2 -> FRAGMENT
+44:	OPTIONAL-2 -> /* empty */
+45:	lexerRule -> OPTIONAL-2 TERM COLON lexerRhss SEMICOLON
+46:	lexerRhss -> lexerRhss BAR lexerRhs
+47:	lexerRhss -> lexerRhs
+48:	OPTIONAL-3 -> CIRCUMFLEX
+49:	OPTIONAL-3 -> /* empty */
+50:	OPTIONAL-4 -> DOLLAR
+51:	OPTIONAL-4 -> /* empty */
+52:	lexerRhs -> /* empty */
+53:	lexerRhs -> OPTIONAL-3 lexerElements OPTIONAL-4
+54:	lexerElements -> lexerElements lexerElement
+55:	lexerElements -> lexerElement
+56:	OPTIONAL-5 -> ebnfSuffix
+57:	OPTIONAL-5 -> /* empty */
+58:	lexerElement -> lexerAtom OPTIONAL-5
+59:	lexerElement -> ACTION
+60:	lexerAtom -> LPAREN lexerRhss RPAREN
+61:	lexerAtom -> RANGE
+62:	lexerAtom -> TERM
+63:	lexerAtom -> DOT
+64:	lexerAtom -> SQ_LITERAL
+65:	lexerAtom -> DQ_LITERAL
+66:	OPTIONAL-6 -> QUESTION
+67:	OPTIONAL-6 -> /* empty */
+68:	OPTIONAL-7 -> QUESTION
+69:	OPTIONAL-7 -> /* empty */
+70:	ebnfSuffix -> PLUS OPTIONAL-6
+71:	ebnfSuffix -> STAR OPTIONAL-7
+72:	ebnfSuffix -> QUESTION
+73:	parserRule -> NOTERM parserRuleType COLON parserRhss SEMICOLON
+74:	parserRuleType -> /* empty */
+75:	parserRuleType -> AS id
+76:	parserRhss -> parserRhss BAR parserRhs
+77:	parserRhss -> parserRhs
+78:	parserRhs -> /* empty */
+79:	parserRhs -> parserElements
+80:	parserElements -> parserElements parserElement
+81:	parserElements -> parserElement
+82:	OPTIONAL-8 -> ebnfSuffix
+83:	OPTIONAL-8 -> /* empty */
+84:	parserElement -> parserAtom OPTIONAL-8
+85:	parserElement -> ACTION
+86:	parserAtom -> LPAREN parserRhss RPAREN
+87:	parserAtom -> TERM
+88:	parserAtom -> NOTERM
+89:	id -> TERM
+90:	id -> NOTERM
+91:	id -> UNDERSCORE
+
+States:
+-------
+State 0:
+
+	$start -> . start $end	(Rule 0)
+
+	GRAMMAR	shift, and go to state 2
+
+	program	go to state 3
+	start	go to state 1
+
+State 1:
+
+	$start -> start . $end	(Rule 0)
+
+	$end	shift, and go to state 4
+
+State 2:
+
+	program -> GRAMMAR . id SEMICOLON optionalBody	(Rule 2)
+
+	NOTERM	shift, and go to state 7
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	id	go to state 8
+
+State 3:
+
+	start -> program .	(Rule 1)
+
+	$default	reduce using rule 1 (start)
+
+State 4:
+
+	$start -> start $end .	(Rule 0)
+
+	$default	accept
+
+State 5:
+
+	id -> TERM .	(Rule 89)
+
+	$default	reduce using rule 89 (id)
+
+State 6:
+
+	id -> UNDERSCORE .	(Rule 91)
+
+	$default	reduce using rule 91 (id)
+
+State 7:
+
+	id -> NOTERM .	(Rule 90)
+
+	$default	reduce using rule 90 (id)
+
+State 8:
+
+	program -> GRAMMAR id . SEMICOLON optionalBody	(Rule 2)
+
+	SEMICOLON	shift, and go to state 9
+
+State 9:
+
+	program -> GRAMMAR id SEMICOLON . optionalBody	(Rule 2)
+
+	FRAGMENT	shift, and go to state 15
+	NOTERM	shift, and go to state 19
+	SECTION	shift, and go to state 13
+	USE	shift, and go to state 12
+
+	$end	reduce using rule 3 (optionalBody)
+	TERM	reduce using rule 44 (OPTIONAL-2)
+
+	rule	go to state 14
+	spec	go to state 16
+	optionalBody	go to state 11
+	OPTIONAL-2	go to state 10
+	section	go to state 22
+	body	go to state 21
+	use	go to state 20
+	lexerRule	go to state 17
+	parserRule	go to state 18
+
+State 10:
+
+	lexerRule -> OPTIONAL-2 . TERM COLON lexerRhss SEMICOLON	(Rule 45)
+
+	TERM	shift, and go to state 23
+
+State 11:
+
+	program -> GRAMMAR id SEMICOLON optionalBody .	(Rule 2)
+
+	$default	reduce using rule 2 (program)
+
+State 12:
+
+	use -> USE . PACKAGE_NAME OPTIONAL-1 SEMICOLON	(Rule 12)
+
+	PACKAGE_NAME	shift, and go to state 24
+
+State 13:
+
+	section -> SECTION . sectionNames SEMICOLON	(Rule 34)
+
+	LPAREN	shift, and go to state 25
+	TERM	shift, and go to state 28
+
+	sectionName	go to state 26
+	sectionNames	go to state 27
+
+State 14:
+
+	spec -> rule .	(Rule 7)
+
+	$default	reduce using rule 7 (spec)
+
+State 15:
+
+	OPTIONAL-2 -> FRAGMENT .	(Rule 43)
+
+	$default	reduce using rule 43 (OPTIONAL-2)
+
+State 16:
+
+	body -> spec .	(Rule 6)
+
+	$default	reduce using rule 6 (body)
+
+State 17:
+
+	rule -> lexerRule .	(Rule 41)
+
+	$default	reduce using rule 41 (rule)
+
+State 18:
+
+	rule -> parserRule .	(Rule 42)
+
+	$default	reduce using rule 42 (rule)
+
+State 19:
+
+	parserRule -> NOTERM . parserRuleType COLON parserRhss SEMICOLON	(Rule 73)
+
+	AS	shift, and go to state 30
+
+	COLON	reduce using rule 74 (parserRuleType)
+
+	parserRuleType	go to state 29
+
+State 20:
+
+	spec -> use .	(Rule 9)
+
+	$default	reduce using rule 9 (spec)
+
+State 21:
+
+	optionalBody -> body .	(Rule 4)
+	body -> body . spec	(Rule 5)
+
+	FRAGMENT	shift, and go to state 15
+	NOTERM	shift, and go to state 19
+	SECTION	shift, and go to state 13
+	USE	shift, and go to state 12
+
+	$end	reduce using rule 4 (optionalBody)
+	TERM	reduce using rule 44 (OPTIONAL-2)
+
+	use	go to state 20
+	parserRule	go to state 18
+	lexerRule	go to state 17
+	OPTIONAL-2	go to state 10
+	spec	go to state 31
+	rule	go to state 14
+	section	go to state 22
+
+State 22:
+
+	spec -> section .	(Rule 8)
+
+	$default	reduce using rule 8 (spec)
+
+State 23:
+
+	lexerRule -> OPTIONAL-2 TERM . COLON lexerRhss SEMICOLON	(Rule 45)
+
+	COLON	shift, and go to state 32
+
+State 24:
+
+	use -> USE PACKAGE_NAME . OPTIONAL-1 SEMICOLON	(Rule 12)
+
+	LPAREN	shift, and go to state 35
+	QW	shift, and go to state 33
+
+	SEMICOLON	reduce using rule 11 (OPTIONAL-1)
+
+	legacyArray	go to state 38
+	lazyArray	go to state 34
+	OPTIONAL-1	go to state 36
+	array	go to state 37
+
+State 25:
+
+	sectionNames -> LPAREN . STAR RPAREN	(Rule 36)
+	sectionNames -> LPAREN . sectionNameSequence RPAREN	(Rule 37)
+
+	STAR	shift, and go to state 39
+	TERM	shift, and go to state 28
+
+	sectionNameSequence	go to state 41
+	sectionName	go to state 40
+
+State 26:
+
+	sectionNames -> sectionName .	(Rule 35)
+
+	$default	reduce using rule 35 (sectionNames)
+
+State 27:
+
+	section -> SECTION sectionNames . SEMICOLON	(Rule 34)
+
+	SEMICOLON	shift, and go to state 42
+
+State 28:
+
+	sectionName -> TERM .	(Rule 38)
+
+	$default	reduce using rule 38 (sectionName)
+
+State 29:
+
+	parserRule -> NOTERM parserRuleType . COLON parserRhss SEMICOLON	(Rule 73)
+
+	COLON	shift, and go to state 43
+
+State 30:
+
+	parserRuleType -> AS . id	(Rule 75)
+
+	NOTERM	shift, and go to state 7
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	id	go to state 44
+
+State 31:
+
+	body -> body spec .	(Rule 5)
+
+	$default	reduce using rule 5 (body)
+
+State 32:
+
+	lexerRule -> OPTIONAL-2 TERM COLON . lexerRhss SEMICOLON	(Rule 45)
+
+	CIRCUMFLEX	shift, and go to state 47
+
+	ACTION	reduce using rule 49 (OPTIONAL-3)
+	BAR	reduce using rule 52 (lexerRhs)
+	DOT	reduce using rule 49 (OPTIONAL-3)
+	DQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	LPAREN	reduce using rule 49 (OPTIONAL-3)
+	RANGE	reduce using rule 49 (OPTIONAL-3)
+	SEMICOLON	reduce using rule 52 (lexerRhs)
+	SQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	TERM	reduce using rule 49 (OPTIONAL-3)
+
+	lexerRhss	go to state 45
+	OPTIONAL-3	go to state 48
+	lexerRhs	go to state 46
+
+State 33:
+
+	lazyArray -> QW . qwOpen optLazyItems qwClose	(Rule 15)
+
+	LPAREN	shift, and go to state 50
+	LT	shift, and go to state 51
+	SLASH	shift, and go to state 49
+
+	qwOpen	go to state 52
+
+State 34:
+
+	array -> lazyArray .	(Rule 13)
+
+	$default	reduce using rule 13 (array)
+
+State 35:
+
+	legacyArray -> LPAREN . optItems RPAREN	(Rule 25)
+
+	DQRAWSTR	shift, and go to state 58
+	NOTERM	shift, and go to state 7
+	SQRAWSTR	shift, and go to state 56
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	RPAREN	reduce using rule 26 (optItems)
+
+	id	go to state 55
+	item	go to state 54
+	rawStr	go to state 53
+	items	go to state 59
+	optItems	go to state 57
+
+State 36:
+
+	use -> USE PACKAGE_NAME OPTIONAL-1 . SEMICOLON	(Rule 12)
+
+	SEMICOLON	shift, and go to state 60
+
+State 37:
+
+	OPTIONAL-1 -> array .	(Rule 10)
+
+	$default	reduce using rule 10 (OPTIONAL-1)
+
+State 38:
+
+	array -> legacyArray .	(Rule 14)
+
+	$default	reduce using rule 14 (array)
+
+State 39:
+
+	sectionNames -> LPAREN STAR . RPAREN	(Rule 36)
+
+	RPAREN	shift, and go to state 61
+
+State 40:
+
+	sectionNameSequence -> sectionName .	(Rule 40)
+
+	$default	reduce using rule 40 (sectionNameSequence)
+
+State 41:
+
+	sectionNames -> LPAREN sectionNameSequence . RPAREN	(Rule 37)
+	sectionNameSequence -> sectionNameSequence . COMMA sectionName	(Rule 39)
+
+	COMMA	shift, and go to state 62
+	RPAREN	shift, and go to state 63
+
+State 42:
+
+	section -> SECTION sectionNames SEMICOLON .	(Rule 34)
+
+	$default	reduce using rule 34 (section)
+
+State 43:
+
+	parserRule -> NOTERM parserRuleType COLON . parserRhss SEMICOLON	(Rule 73)
+
+	ACTION	shift, and go to state 69
+	LPAREN	shift, and go to state 67
+	NOTERM	shift, and go to state 64
+	TERM	shift, and go to state 71
+
+	BAR	reduce using rule 78 (parserRhs)
+	SEMICOLON	reduce using rule 78 (parserRhs)
+
+	parserAtom	go to state 68
+	parserRhss	go to state 72
+	parserRhs	go to state 66
+	parserElements	go to state 65
+	parserElement	go to state 70
+
+State 44:
+
+	parserRuleType -> AS id .	(Rule 75)
+
+	$default	reduce using rule 75 (parserRuleType)
+
+State 45:
+
+	lexerRule -> OPTIONAL-2 TERM COLON lexerRhss . SEMICOLON	(Rule 45)
+	lexerRhss -> lexerRhss . BAR lexerRhs	(Rule 46)
+
+	BAR	shift, and go to state 74
+	SEMICOLON	shift, and go to state 73
+
+State 46:
+
+	lexerRhss -> lexerRhs .	(Rule 47)
+
+	$default	reduce using rule 47 (lexerRhss)
+
+State 47:
+
+	OPTIONAL-3 -> CIRCUMFLEX .	(Rule 48)
+
+	$default	reduce using rule 48 (OPTIONAL-3)
+
+State 48:
+
+	lexerRhs -> OPTIONAL-3 . lexerElements OPTIONAL-4	(Rule 53)
+
+	ACTION	shift, and go to state 77
+	DOT	shift, and go to state 81
+	DQ_LITERAL	shift, and go to state 80
+	LPAREN	shift, and go to state 82
+	RANGE	shift, and go to state 83
+	SQ_LITERAL	shift, and go to state 84
+	TERM	shift, and go to state 75
+
+	lexerAtom	go to state 79
+	lexerElements	go to state 78
+	lexerElement	go to state 76
+
+State 49:
+
+	qwOpen -> SLASH .	(Rule 17)
+
+	$default	reduce using rule 17 (qwOpen)
+
+State 50:
+
+	qwOpen -> LPAREN .	(Rule 16)
+
+	$default	reduce using rule 16 (qwOpen)
+
+State 51:
+
+	qwOpen -> LT .	(Rule 18)
+
+	$default	reduce using rule 18 (qwOpen)
+
+State 52:
+
+	lazyArray -> QW qwOpen . optLazyItems qwClose	(Rule 15)
+
+	NOTERM	shift, and go to state 7
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	QWCLOSE	reduce using rule 20 (optLazyItems)
+
+	optLazyItems	go to state 86
+	lazyItems	go to state 87
+	lazyItem	go to state 88
+	id	go to state 85
+
+State 53:
+
+	item -> rawStr .	(Rule 31)
+
+	$default	reduce using rule 31 (item)
+
+State 54:
+
+	items -> item .	(Rule 29)
+
+	$default	reduce using rule 29 (items)
+
+State 55:
+
+	item -> id .	(Rule 30)
+
+	$default	reduce using rule 30 (item)
+
+State 56:
+
+	rawStr -> SQRAWSTR .	(Rule 32)
+
+	$default	reduce using rule 32 (rawStr)
+
+State 57:
+
+	legacyArray -> LPAREN optItems . RPAREN	(Rule 25)
+
+	RPAREN	shift, and go to state 89
+
+State 58:
+
+	rawStr -> DQRAWSTR .	(Rule 33)
+
+	$default	reduce using rule 33 (rawStr)
+
+State 59:
+
+	optItems -> items .	(Rule 27)
+	items -> items . COMMA item	(Rule 28)
+
+	COMMA	shift, and go to state 90
+
+	RPAREN	reduce using rule 27 (optItems)
+
+State 60:
+
+	use -> USE PACKAGE_NAME OPTIONAL-1 SEMICOLON .	(Rule 12)
+
+	$default	reduce using rule 12 (use)
+
+State 61:
+
+	sectionNames -> LPAREN STAR RPAREN .	(Rule 36)
+
+	$default	reduce using rule 36 (sectionNames)
+
+State 62:
+
+	sectionNameSequence -> sectionNameSequence COMMA . sectionName	(Rule 39)
+
+	TERM	shift, and go to state 28
+
+	sectionName	go to state 91
+
+State 63:
+
+	sectionNames -> LPAREN sectionNameSequence RPAREN .	(Rule 37)
+
+	$default	reduce using rule 37 (sectionNames)
+
+State 64:
+
+	parserAtom -> NOTERM .	(Rule 88)
+
+	$default	reduce using rule 88 (parserAtom)
+
+State 65:
+
+	parserRhs -> parserElements .	(Rule 79)
+	parserElements -> parserElements . parserElement	(Rule 80)
+
+	ACTION	shift, and go to state 69
+	LPAREN	shift, and go to state 67
+	NOTERM	shift, and go to state 64
+	TERM	shift, and go to state 71
+
+	BAR	reduce using rule 79 (parserRhs)
+	RPAREN	reduce using rule 79 (parserRhs)
+	SEMICOLON	reduce using rule 79 (parserRhs)
+
+	parserAtom	go to state 68
+	parserElement	go to state 92
+
+State 66:
+
+	parserRhss -> parserRhs .	(Rule 77)
+
+	$default	reduce using rule 77 (parserRhss)
+
+State 67:
+
+	parserAtom -> LPAREN . parserRhss RPAREN	(Rule 86)
+
+	ACTION	shift, and go to state 69
+	LPAREN	shift, and go to state 67
+	NOTERM	shift, and go to state 64
+	TERM	shift, and go to state 71
+
+	BAR	reduce using rule 78 (parserRhs)
+	RPAREN	reduce using rule 78 (parserRhs)
+
+	parserElement	go to state 70
+	parserAtom	go to state 68
+	parserRhss	go to state 93
+	parserRhs	go to state 66
+	parserElements	go to state 65
+
+State 68:
+
+	parserElement -> parserAtom . OPTIONAL-8	(Rule 84)
+
+	PLUS	shift, and go to state 95
+	QUESTION	shift, and go to state 94
+	STAR	shift, and go to state 97
+
+	ACTION	reduce using rule 83 (OPTIONAL-8)
+	BAR	reduce using rule 83 (OPTIONAL-8)
+	LPAREN	reduce using rule 83 (OPTIONAL-8)
+	NOTERM	reduce using rule 83 (OPTIONAL-8)
+	RPAREN	reduce using rule 83 (OPTIONAL-8)
+	SEMICOLON	reduce using rule 83 (OPTIONAL-8)
+	TERM	reduce using rule 83 (OPTIONAL-8)
+
+	ebnfSuffix	go to state 96
+	OPTIONAL-8	go to state 98
+
+State 69:
+
+	parserElement -> ACTION .	(Rule 85)
+
+	$default	reduce using rule 85 (parserElement)
+
+State 70:
+
+	parserElements -> parserElement .	(Rule 81)
+
+	$default	reduce using rule 81 (parserElements)
+
+State 71:
+
+	parserAtom -> TERM .	(Rule 87)
+
+	$default	reduce using rule 87 (parserAtom)
+
+State 72:
+
+	parserRule -> NOTERM parserRuleType COLON parserRhss . SEMICOLON	(Rule 73)
+	parserRhss -> parserRhss . BAR parserRhs	(Rule 76)
+
+	BAR	shift, and go to state 100
+	SEMICOLON	shift, and go to state 99
+
+State 73:
+
+	lexerRule -> OPTIONAL-2 TERM COLON lexerRhss SEMICOLON .	(Rule 45)
+
+	$default	reduce using rule 45 (lexerRule)
+
+State 74:
+
+	lexerRhss -> lexerRhss BAR . lexerRhs	(Rule 46)
+
+	CIRCUMFLEX	shift, and go to state 47
+
+	ACTION	reduce using rule 49 (OPTIONAL-3)
+	BAR	reduce using rule 52 (lexerRhs)
+	DOT	reduce using rule 49 (OPTIONAL-3)
+	DQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	LPAREN	reduce using rule 49 (OPTIONAL-3)
+	RANGE	reduce using rule 49 (OPTIONAL-3)
+	RPAREN	reduce using rule 52 (lexerRhs)
+	SEMICOLON	reduce using rule 52 (lexerRhs)
+	SQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	TERM	reduce using rule 49 (OPTIONAL-3)
+
+	lexerRhs	go to state 101
+	OPTIONAL-3	go to state 48
+
+State 75:
+
+	lexerAtom -> TERM .	(Rule 62)
+
+	$default	reduce using rule 62 (lexerAtom)
+
+State 76:
+
+	lexerElements -> lexerElement .	(Rule 55)
+
+	$default	reduce using rule 55 (lexerElements)
+
+State 77:
+
+	lexerElement -> ACTION .	(Rule 59)
+
+	$default	reduce using rule 59 (lexerElement)
+
+State 78:
+
+	lexerRhs -> OPTIONAL-3 lexerElements . OPTIONAL-4	(Rule 53)
+	lexerElements -> lexerElements . lexerElement	(Rule 54)
+
+	ACTION	shift, and go to state 77
+	DOLLAR	shift, and go to state 104
+	DOT	shift, and go to state 81
+	DQ_LITERAL	shift, and go to state 80
+	LPAREN	shift, and go to state 82
+	RANGE	shift, and go to state 83
+	SQ_LITERAL	shift, and go to state 84
+	TERM	shift, and go to state 75
+
+	BAR	reduce using rule 51 (OPTIONAL-4)
+	RPAREN	reduce using rule 51 (OPTIONAL-4)
+	SEMICOLON	reduce using rule 51 (OPTIONAL-4)
+
+	lexerAtom	go to state 79
+	OPTIONAL-4	go to state 102
+	lexerElement	go to state 103
+
+State 79:
+
+	lexerElement -> lexerAtom . OPTIONAL-5	(Rule 58)
+
+	PLUS	shift, and go to state 95
+	QUESTION	shift, and go to state 94
+	STAR	shift, and go to state 97
+
+	ACTION	reduce using rule 57 (OPTIONAL-5)
+	BAR	reduce using rule 57 (OPTIONAL-5)
+	DOLLAR	reduce using rule 57 (OPTIONAL-5)
+	DOT	reduce using rule 57 (OPTIONAL-5)
+	DQ_LITERAL	reduce using rule 57 (OPTIONAL-5)
+	LPAREN	reduce using rule 57 (OPTIONAL-5)
+	RANGE	reduce using rule 57 (OPTIONAL-5)
+	RPAREN	reduce using rule 57 (OPTIONAL-5)
+	SEMICOLON	reduce using rule 57 (OPTIONAL-5)
+	SQ_LITERAL	reduce using rule 57 (OPTIONAL-5)
+	TERM	reduce using rule 57 (OPTIONAL-5)
+
+	OPTIONAL-5	go to state 106
+	ebnfSuffix	go to state 105
+
+State 80:
+
+	lexerAtom -> DQ_LITERAL .	(Rule 65)
+
+	$default	reduce using rule 65 (lexerAtom)
+
+State 81:
+
+	lexerAtom -> DOT .	(Rule 63)
+
+	$default	reduce using rule 63 (lexerAtom)
+
+State 82:
+
+	lexerAtom -> LPAREN . lexerRhss RPAREN	(Rule 60)
+
+	CIRCUMFLEX	shift, and go to state 47
+
+	ACTION	reduce using rule 49 (OPTIONAL-3)
+	BAR	reduce using rule 52 (lexerRhs)
+	DOT	reduce using rule 49 (OPTIONAL-3)
+	DQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	LPAREN	reduce using rule 49 (OPTIONAL-3)
+	RANGE	reduce using rule 49 (OPTIONAL-3)
+	RPAREN	reduce using rule 52 (lexerRhs)
+	SQ_LITERAL	reduce using rule 49 (OPTIONAL-3)
+	TERM	reduce using rule 49 (OPTIONAL-3)
+
+	lexerRhs	go to state 46
+	lexerRhss	go to state 107
+	OPTIONAL-3	go to state 48
+
+State 83:
+
+	lexerAtom -> RANGE .	(Rule 61)
+
+	$default	reduce using rule 61 (lexerAtom)
+
+State 84:
+
+	lexerAtom -> SQ_LITERAL .	(Rule 64)
+
+	$default	reduce using rule 64 (lexerAtom)
+
+State 85:
+
+	lazyItem -> id .	(Rule 24)
+
+	$default	reduce using rule 24 (lazyItem)
+
+State 86:
+
+	lazyArray -> QW qwOpen optLazyItems . qwClose	(Rule 15)
+
+	QWCLOSE	shift, and go to state 108
+
+	qwClose	go to state 109
+
+State 87:
+
+	optLazyItems -> lazyItems .	(Rule 21)
+	lazyItems -> lazyItems . lazyItem	(Rule 22)
+
+	NOTERM	shift, and go to state 7
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	QWCLOSE	reduce using rule 21 (optLazyItems)
+
+	id	go to state 85
+	lazyItem	go to state 110
+
+State 88:
+
+	lazyItems -> lazyItem .	(Rule 23)
+
+	$default	reduce using rule 23 (lazyItems)
+
+State 89:
+
+	legacyArray -> LPAREN optItems RPAREN .	(Rule 25)
+
+	$default	reduce using rule 25 (legacyArray)
+
+State 90:
+
+	items -> items COMMA . item	(Rule 28)
+
+	DQRAWSTR	shift, and go to state 58
+	NOTERM	shift, and go to state 7
+	SQRAWSTR	shift, and go to state 56
+	TERM	shift, and go to state 5
+	UNDERSCORE	shift, and go to state 6
+
+	item	go to state 111
+	rawStr	go to state 53
+	id	go to state 55
+
+State 91:
+
+	sectionNameSequence -> sectionNameSequence COMMA sectionName .	(Rule 39)
+
+	$default	reduce using rule 39 (sectionNameSequence)
+
+State 92:
+
+	parserElements -> parserElements parserElement .	(Rule 80)
+
+	$default	reduce using rule 80 (parserElements)
+
+State 93:
+
+	parserRhss -> parserRhss . BAR parserRhs	(Rule 76)
+	parserAtom -> LPAREN parserRhss . RPAREN	(Rule 86)
+
+	BAR	shift, and go to state 100
+	RPAREN	shift, and go to state 112
+
+State 94:
+
+	ebnfSuffix -> QUESTION .	(Rule 72)
+
+	$default	reduce using rule 72 (ebnfSuffix)
+
+State 95:
+
+	ebnfSuffix -> PLUS . OPTIONAL-6	(Rule 70)
+
+	QUESTION	shift, and go to state 113
+
+	ACTION	reduce using rule 67 (OPTIONAL-6)
+	BAR	reduce using rule 67 (OPTIONAL-6)
+	DOLLAR	reduce using rule 67 (OPTIONAL-6)
+	DOT	reduce using rule 67 (OPTIONAL-6)
+	DQ_LITERAL	reduce using rule 67 (OPTIONAL-6)
+	LPAREN	reduce using rule 67 (OPTIONAL-6)
+	NOTERM	reduce using rule 67 (OPTIONAL-6)
+	RANGE	reduce using rule 67 (OPTIONAL-6)
+	RPAREN	reduce using rule 67 (OPTIONAL-6)
+	SEMICOLON	reduce using rule 67 (OPTIONAL-6)
+	SQ_LITERAL	reduce using rule 67 (OPTIONAL-6)
+	TERM	reduce using rule 67 (OPTIONAL-6)
+
+	OPTIONAL-6	go to state 114
+
+State 96:
+
+	OPTIONAL-8 -> ebnfSuffix .	(Rule 82)
+
+	$default	reduce using rule 82 (OPTIONAL-8)
+
+State 97:
+
+	ebnfSuffix -> STAR . OPTIONAL-7	(Rule 71)
+
+	QUESTION	shift, and go to state 116
+
+	ACTION	reduce using rule 69 (OPTIONAL-7)
+	BAR	reduce using rule 69 (OPTIONAL-7)
+	DOLLAR	reduce using rule 69 (OPTIONAL-7)
+	DOT	reduce using rule 69 (OPTIONAL-7)
+	DQ_LITERAL	reduce using rule 69 (OPTIONAL-7)
+	LPAREN	reduce using rule 69 (OPTIONAL-7)
+	NOTERM	reduce using rule 69 (OPTIONAL-7)
+	RANGE	reduce using rule 69 (OPTIONAL-7)
+	RPAREN	reduce using rule 69 (OPTIONAL-7)
+	SEMICOLON	reduce using rule 69 (OPTIONAL-7)
+	SQ_LITERAL	reduce using rule 69 (OPTIONAL-7)
+	TERM	reduce using rule 69 (OPTIONAL-7)
+
+	OPTIONAL-7	go to state 115
+
+State 98:
+
+	parserElement -> parserAtom OPTIONAL-8 .	(Rule 84)
+
+	$default	reduce using rule 84 (parserElement)
+
+State 99:
+
+	parserRule -> NOTERM parserRuleType COLON parserRhss SEMICOLON .	(Rule 73)
+
+	$default	reduce using rule 73 (parserRule)
+
+State 100:
+
+	parserRhss -> parserRhss BAR . parserRhs	(Rule 76)
+
+	ACTION	shift, and go to state 69
+	LPAREN	shift, and go to state 67
+	NOTERM	shift, and go to state 64
+	TERM	shift, and go to state 71
+
+	BAR	reduce using rule 78 (parserRhs)
+	RPAREN	reduce using rule 78 (parserRhs)
+	SEMICOLON	reduce using rule 78 (parserRhs)
+
+	parserElement	go to state 70
+	parserRhs	go to state 117
+	parserElements	go to state 65
+	parserAtom	go to state 68
+
+State 101:
+
+	lexerRhss -> lexerRhss BAR lexerRhs .	(Rule 46)
+
+	$default	reduce using rule 46 (lexerRhss)
+
+State 102:
+
+	lexerRhs -> OPTIONAL-3 lexerElements OPTIONAL-4 .	(Rule 53)
+
+	$default	reduce using rule 53 (lexerRhs)
+
+State 103:
+
+	lexerElements -> lexerElements lexerElement .	(Rule 54)
+
+	$default	reduce using rule 54 (lexerElements)
+
+State 104:
+
+	OPTIONAL-4 -> DOLLAR .	(Rule 50)
+
+	$default	reduce using rule 50 (OPTIONAL-4)
+
+State 105:
+
+	OPTIONAL-5 -> ebnfSuffix .	(Rule 56)
+
+	$default	reduce using rule 56 (OPTIONAL-5)
+
+State 106:
+
+	lexerElement -> lexerAtom OPTIONAL-5 .	(Rule 58)
+
+	$default	reduce using rule 58 (lexerElement)
+
+State 107:
+
+	lexerRhss -> lexerRhss . BAR lexerRhs	(Rule 46)
+	lexerAtom -> LPAREN lexerRhss . RPAREN	(Rule 60)
+
+	BAR	shift, and go to state 74
+	RPAREN	shift, and go to state 118
+
+State 108:
+
+	qwClose -> QWCLOSE .	(Rule 19)
+
+	$default	reduce using rule 19 (qwClose)
+
+State 109:
+
+	lazyArray -> QW qwOpen optLazyItems qwClose .	(Rule 15)
+
+	$default	reduce using rule 15 (lazyArray)
+
+State 110:
+
+	lazyItems -> lazyItems lazyItem .	(Rule 22)
+
+	$default	reduce using rule 22 (lazyItems)
+
+State 111:
+
+	items -> items COMMA item .	(Rule 28)
+
+	$default	reduce using rule 28 (items)
+
+State 112:
+
+	parserAtom -> LPAREN parserRhss RPAREN .	(Rule 86)
+
+	$default	reduce using rule 86 (parserAtom)
+
+State 113:
+
+	OPTIONAL-6 -> QUESTION .	(Rule 66)
+
+	$default	reduce using rule 66 (OPTIONAL-6)
+
+State 114:
+
+	ebnfSuffix -> PLUS OPTIONAL-6 .	(Rule 70)
+
+	$default	reduce using rule 70 (ebnfSuffix)
+
+State 115:
+
+	ebnfSuffix -> STAR OPTIONAL-7 .	(Rule 71)
+
+	$default	reduce using rule 71 (ebnfSuffix)
+
+State 116:
+
+	OPTIONAL-7 -> QUESTION .	(Rule 68)
+
+	$default	reduce using rule 68 (OPTIONAL-7)
+
+State 117:
+
+	parserRhss -> parserRhss BAR parserRhs .	(Rule 76)
+
+	$default	reduce using rule 76 (parserRhss)
+
+State 118:
+
+	lexerAtom -> LPAREN lexerRhss RPAREN .	(Rule 60)
+
+	$default	reduce using rule 60 (lexerAtom)
+
+
+Summary:
+--------
+Number of rules         : 92
+Number of terminals     : 32
+Number of non-terminals : 47
+Number of states        : 119

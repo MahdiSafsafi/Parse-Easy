@@ -1,0 +1,287 @@
+%token LPAREN RPAREN LBRACK RBRACK LBRACE RBRACE BAR DOT COLON COLONCOLON COMMA SEMICOLON 
+%token LT GT SLASH
+%token MINUS PLUS STAR QUESTION
+%token CIRCUMFLEX DOLLAR
+%token RANGE
+%token FRAGMENT GRAMMAR SECTION QW QWCLOSE USE AS
+%token TERM NOTERM UNDERSCORE PACKAGE_NAME 
+%token SQ_LITERAL DQ_LITERAL ACTION
+%token SQRAWSTR DQRAWSTR
+
+%{
+
+  use Parse::Easy::Grammar;
+  use Parse::Easy::Rule;
+  use Parse::Easy::Term;
+  use Parse::Easy::NoTerm;
+  use Parse::Easy::CharacterSet;
+  use Parse::Easy::Wildcard;
+  use Parse::Easy::Control;
+  
+  my $grammar = Parse::Easy::Grammar->new();
+  my $lexer   = $grammar->{lexer};
+  my $parser  = $grammar->{parser};
+ 
+%}
+
+%start start
+%strict
+
+%%
+start
+  : program
+  ;
+  
+program
+  : GRAMMAR id SEMICOLON optionalBody
+  {
+    $grammar->{name} = $_[2];
+    $grammar;
+  }
+  ;
+
+optionalBody
+  : 
+  | body
+  ;
+  
+body
+  : body spec
+  | spec
+  ;
+
+spec
+  : rule
+  | section
+  | use
+  ;
+  
+use
+  : USE PACKAGE_NAME array? SEMICOLON
+  {
+    my $array = $_[3][0] // [];
+    $grammar->processUse($_[2], $array);
+  }
+  ; 
+
+array
+  : lazyArray
+  | legacyArray
+  ;
+  
+lazyArray
+  : QW qwOpen optLazyItems qwClose  { $_[3] // [] }
+  ;
+    
+qwOpen
+  : LPAREN
+  | SLASH
+  | LT
+  ;
+
+qwClose
+  : QWCLOSE
+  ;
+       
+optLazyItems
+  : #empty
+  | lazyItems
+  ;
+  
+lazyItems
+  : lazyItems lazyItem  { push @{$_[1]}, $_[2]; $_[1] }
+  | lazyItem            { [$_[1]] }
+  ;
+  
+lazyItem
+  : id
+  ;
+  
+legacyArray
+  : LPAREN optItems RPAREN  { $_[2] // [] }
+  ;
+
+optItems
+  : #empty 
+  | items
+  ;
+
+items
+  : items COMMA item  { push @{$_[1]}, $_[3]; $_[1] }
+  | item              { [$_[1]] }
+  ;
+  
+item
+  : id
+  | rawStr
+  ;
+
+rawStr
+  : SQRAWSTR
+  | DQRAWSTR
+  ;
+  
+section
+  : SECTION sectionNames SEMICOLON
+  { $lexer->currentSections($_[2]) }
+  ;
+   
+sectionNames
+  : sectionName                       { [$_[1]] }
+  | LPAREN STAR RPAREN                { $lexer->{sections} }
+  | LPAREN sectionNameSequence RPAREN { $_[2]   }
+  ;
+  
+sectionName
+  : TERM
+  ;
+
+sectionNameSequence
+  : sectionNameSequence COMMA sectionName { push @{$_[1]}, $_[3]; $_[1] }
+  | sectionName                           { [$_[1]] }
+  ;
+  
+rule
+  : lexerRule
+  | parserRule
+  ;
+  
+lexerRule
+  : FRAGMENT? TERM COLON lexerRhss SEMICOLON
+  {
+    my $name     = $_[2];
+  	my $fragment = defined $_[1][0];
+  	exists $lexer->{names}->{$name} || exists $parser->{names}->{$name}
+  	and die sprintf "rule '%s' already declared.", $name;
+  	foreach my $rhs(@{ $_[4] }){
+  	    my $rule = Parse::Easy::Rule->new($name, $rhs);
+  	    $fragment and $rule->fragment(1);
+  	    $lexer->addRule($rule);
+  	} 
+  }
+  ;
+
+lexerRhss
+  : lexerRhss BAR lexerRhs { push @{$_[1]}, $_[3]; $_[1] }
+  | lexerRhs               { [$_[1]] }
+  ;
+  
+lexerRhs
+  : #empty
+  | CIRCUMFLEX? lexerElements DOLLAR?
+  {
+  	if (!( defined $_[1][0] || defined $_[3][0] ) ) {
+  		$_[2];
+  	}
+  	else {
+  		my @elements = ();
+  		defined $_[1][0] and push @elements, Parse::Easy::Control->new('START');
+  		push @elements, @{ $_[2] };
+  		defined $_[3][0] and push @elements, Parse::Easy::Control->new('END');
+  		\@elements;
+  	}
+  }
+  ;
+
+lexerElements
+  : lexerElements lexerElement  { push @{$_[1]}, $_[2]; $_[1] }
+  | lexerElement                { [ $_[1] ]                   }
+  ;
+
+lexerElement
+  : lexerAtom ebnfSuffix?
+  {
+    my $ebnf = $_[2][0];
+    if($ebnf){
+      $lexer->ebnf($_[1], $ebnf);
+    }else{
+      $_[1];
+    }
+  }
+  | ACTION 
+  ;
+
+lexerAtom
+  : LPAREN lexerRhss RPAREN { $lexer->parenthesis($_[2])  }
+  | RANGE          { Parse::Easy::CharacterSet->new($_[1])}
+  | TERM           { Parse::Easy::NoTerm->new($_[1])      }   
+  | DOT            { Parse::Easy::CharacterSet->new(
+                     Parse::Easy::Wildcard::wildcard())   }
+  | SQ_LITERAL
+  | DQ_LITERAL
+  ;
+  
+ebnfSuffix
+  : PLUS QUESTION? { 0x01 | ( defined $_[2][0] ? 0x10 : 0x00 ) }
+  | STAR QUESTION? { 0x02 | ( defined $_[2][0] ? 0x10 : 0x00 ) }
+  | QUESTION       { 0x04                                      }
+  ;  
+  
+# parser rule:
+# ------------
+
+parserRule
+  : NOTERM parserRuleType COLON parserRhss SEMICOLON
+  {
+    my $name     = $_[1];
+  	exists $lexer->{names}->{$name} || exists $parser->{names}->{$name}
+  	and die sprintf "rule '%s' already declared.", $name;
+  	foreach my $rhs(@{ $_[4] }){
+  	    my $rule = Parse::Easy::Rule->new($name, $rhs);
+  	    $rule->returnType($_[2]);
+  	    $parser->addRule($rule);
+  	} 
+  }
+  ;
+
+parserRuleType
+  :       { undef }
+  | AS id { $_[2] }
+  ;
+  
+parserRhss
+  : parserRhss BAR parserRhs { push @{$_[1]}, $_[3]; $_[1] }
+  | parserRhs                { [$_[1]] }
+  ;
+  
+parserRhs
+  : { [] } #empty
+  | parserElements
+  ;
+
+parserElements
+  : parserElements parserElement  { push @{$_[1]}, $_[2]; $_[1] }
+  | parserElement                 { [ $_[1] ]                   }
+  ;
+
+parserElement
+  : parserAtom ebnfSuffix?
+  {
+    my $ebnf = $_[2][0];
+    if($ebnf){
+      $parser->ebnf($_[1], $ebnf);
+    }else{
+      $_[1];
+    }
+  }  
+  | ACTION
+  ;
+  
+parserAtom
+  : LPAREN parserRhss RPAREN     { $parser->parenthesis($_[2])  }
+  | TERM                         { Parse::Easy::Term->new($_[1])   }
+  | NOTERM                       { Parse::Easy::NoTerm->new($_[1]) }
+  ;
+  
+  
+id 
+  : TERM
+  | NOTERM
+  | UNDERSCORE
+  ;
+  
+%%
+
+require 'Parse/Easy/Parse/Lexer.pl';
+__PACKAGE__->lexer(\&__LEXER);
+__PACKAGE__->error(\&__EXPECT);
