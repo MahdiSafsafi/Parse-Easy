@@ -27,6 +27,9 @@ Parse::Easy is a lexer and parser generator for Pascal. When I started working o
 - Supports EBNF.
 - Thread-safe.
 
+## Documentation:
+Please refer to the wiki [page](https://github.com/MahdiSafsafi/Parse-Easy/wiki).
+
 ## Example: 
 The following grammar, parses expression such ```5 * 2 + ((3.3 / 3) - 1)```. Note that it respects operator-precedences.
 
