@@ -2,7 +2,7 @@
 
 #BEGIN_HEADER
 #
-# Module Parse/Easy/Utils.pm Copyright (C) 2018 Mahdi Safsafi.
+# Module Parse/Easy/Utils.pm Copyright (C) 2018-2019 Mahdi Safsafi.
 #
 # https://github.com/MahdiSafsafi/Parse-Easy
 #

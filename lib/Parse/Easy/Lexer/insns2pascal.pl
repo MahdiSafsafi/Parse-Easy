@@ -2,7 +2,7 @@
 
 #BEGIN_HEADER
 #
-# Module insns2pascal.pl Copyright (C) 2018 Mahdi Safsafi.
+# Module Parse/Easy/Lexer/insns2pascal.pl Copyright (C) 2018-2019 Mahdi Safsafi.
 #
 # https://github.com/MahdiSafsafi/Parse-Easy
 #

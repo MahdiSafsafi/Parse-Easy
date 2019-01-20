@@ -11,7 +11,7 @@ my $HEADER = <<'EOH';
 
 #BEGIN_HEADER
 #
-# Module $name Copyright (C) 2018 Mahdi Safsafi.
+# Module $name Copyright (C) 2018-2019 Mahdi Safsafi.
 #
 # https://github.com/MahdiSafsafi/Parse-Easy
 #

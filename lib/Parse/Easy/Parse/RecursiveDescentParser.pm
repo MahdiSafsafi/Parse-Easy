@@ -2,7 +2,7 @@
 
 #BEGIN_HEADER
 #
-# Module Parse/Easy/Parse/RecursiveDescentParser.pm Copyright (C) 2018 Mahdi Safsafi.
+# Module Parse/Easy/Parse/RecursiveDescentParser.pm Copyright (C) 2018-2019 Mahdi Safsafi.
 #
 # https://github.com/MahdiSafsafi/Parse-Easy
 #
